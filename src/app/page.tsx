@@ -55,7 +55,7 @@ export default function Home() {
                     <FieldLabel htmlFor="email" className="text-white/80">
                       E-mail
                     </FieldLabel>
-                    <Input id="email" name="email" type="email" required placeholder="voce@email.com" />
+                    <Input id="email" name="email" type="email" required placeholder="Your-email@email.com" />
                   </Field>
 
                   <Field>
@@ -69,7 +69,7 @@ export default function Home() {
                     type="submit"
                     className="mt-2 bg-signal-amber text-deep-space font-medium hover:bg-signal-amber/90"
                   >
-                    login
+                    Login
                   </Button>
                 </FieldGroup>
               </form>
