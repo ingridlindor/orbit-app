@@ -22,6 +22,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Se algo deu errado, manda para uma página de erro
+  
   redirect('/login?error=Link de confirmação inválido ou expirado')
 }
