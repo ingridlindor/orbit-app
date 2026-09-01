@@ -24,7 +24,7 @@ export function TimerCard({
   onStop,
 }: TimerCardProps) {
   // Estado LOCAL apenas para controlar o texto do botão (Pause <-> Resume)
-  // e o visual. Importante notar: esse estado não pausa o cronômetro de fato
+  // e o visual. Esse estado não pausa o cronômetro de fato
   // (o elapsedTime continua vindo como prop calculada por quem usa o componente) —
   // a pausa "real" (parar de contar tempo) precisa ser tratada via onPause
   // no componente pai
@@ -41,47 +41,42 @@ export function TimerCard({
   return (
     <div className="w-full max-w-sm bg-gradient-to-b from-[#12162E] to-[#0E1226] border border-white/[0.06] rounded-2xl p-5 relative overflow-hidden">
 
-      <div/>
-      {/* Nota: essa div vazia não parece ter função visual (sem className,
-          sem conteúdo) — provavelmente sobrou de alguma versão anterior
-          do componente e pode ser removida com segurança */}
-
-      <div className="flex items-center justify-between mb-4 relative">
-        <div className="flex items-center gap-1.5 text-signal-amber text-[11px] font-semibold tracking-wide">
-          {/* Bolinha pulsante/indicadora de "gravando agora" */}
-          <span className="size-1.5 rounded-full bg-signal-amber" />
-          TRACKING NOW
-        </div>
-        <span className="text-[11px] text-white/40">{client}</span>
-      </div>
-
-      <div className="flex justify-center mb-4 relative">
-        {/* O anel de progresso (TimerRing) é feito com conic-gradient puro em CSS,
-            não com SVG — importante lembrar que essa técnica NÃO funciona
-            no wkhtmltopdf (conforme já descoberto), então mockups em PDF
-            desse componente precisam usar círculos SVG como alternativa */}
-        <div
-          className="size-[190px] rounded-full flex items-center justify-center"
-          style={{
-            // conic-gradient desenha uma "fatia" de cor a partir do centro.
-            // progress vai de 0-100(%), e o círculo tem 360 graus,
-            // então multiplicamos por 3.6 (360/100) para converter
-            // porcentagem em graus. Do 0 até esse ângulo é amber (preenchido),
-            // do ângulo até 360 é a cor de fundo (não preenchido)
-            background: `conic-gradient(#F5A623 ${progress * 3.6}deg, rgba(255,255,255,0.06) ${progress * 3.6}deg 360deg)`,
-          }}
-        >
-          {/* Círculo interno menor, com a mesma cor do fundo do card,
-              criando o efeito visual de "anel" (círculo grande colorido
-              com um buraco no meio mostrando o conteúdo) */}
-          <div className="size-[150px] rounded-full bg-[#0E1226] flex flex-col items-center justify-center">
-            <span className="font-mono text-2xl font-bold text-white">
-              {elapsedTime}
-            </span>
-            <span className="text-[11px] text-white/50 mt-1 text-center px-4">
-              {task}
-            </span>
+        <div className="flex items-center justify-between mb-4 relative">
+          <div className="flex items-center gap-1.5 text-signal-amber text-[11px] font-semibold tracking-wide">
+            {/* Bolinha pulsante/indicadora de "gravando agora" */}
+            <span className="size-1.5 rounded-full bg-signal-amber" />
+            TRACKING NOW
           </div>
+          <span className="text-[11px] text-white/40">{client}</span>
+        </div>
+
+        <div className="flex justify-center mb-4 relative">
+          {/* O anel de progresso (TimerRing) é feito com conic-gradient puro em CSS,
+              não com SVG — importante lembrar que essa técnica NÃO funciona
+              no wkhtmltopdf (conforme já descoberto), então mockups em PDF
+              desse componente precisam usar círculos SVG como alternativa */}
+          <div
+            className="size-[190px] rounded-full flex items-center justify-center"
+            style={{
+              // conic-gradient desenha uma "fatia" de cor a partir do centro.
+              // progress vai de 0-100(%), e o círculo tem 360 graus,
+              // então multiplicamos por 3.6 (360/100) para converter
+              // porcentagem em graus. Do 0 até esse ângulo é amber (preenchido),
+              // do ângulo até 360 é a cor de fundo (não preenchido)
+              background: `conic-gradient(#F5A623 ${progress * 3.6}deg, rgba(255,255,255,0.06) ${progress * 3.6}deg 360deg)`,
+            }}
+          >
+            {/* Círculo interno menor, com a mesma cor do fundo do card,
+                criando o efeito visual de "anel" (círculo grande colorido
+                com um buraco no meio mostrando o conteúdo) */}
+            <div className="size-[150px] rounded-full bg-[#0E1226] flex flex-col items-center justify-center">
+              <span className="font-mono text-2xl font-bold text-white">
+                {elapsedTime}
+              </span>
+              <span className="text-[11px] text-white/50 mt-1 text-center px-4">
+                {task}
+              </span>
+            </div>
         </div>
       </div>
 

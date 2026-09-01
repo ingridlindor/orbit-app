@@ -26,6 +26,7 @@ import {
   Calendar,
   BarChart3,
   Settings,
+  Users,
 } from "lucide-react"; // Ícones SVG prontos
 
 // Array de configuração para os links principais da sidebar.
@@ -36,6 +37,8 @@ const mainNav = [
   { href: "/dashboard/time-tracking", label: "Time Tracking", icon: Clock },
   { href: "/dashboard/invoices", label: "Invoices", icon: FileText },
   { href: "/dashboard/schedule", label: "Schedule", icon: Calendar },
+  { href: "/dashboard/clients", label: "Clients", icon: Users },
+  { href: "/dashboard/projects", label: "Projects", icon: BarChart3 },
 ];
 
 // Segundo grupo de navegação, separado visualmente do principal
