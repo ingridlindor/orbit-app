@@ -26,6 +26,7 @@ import {
   Calendar,
   BarChart3,
   Settings,
+  Users,
 } from "lucide-react"; // Ícones SVG prontos
 
 // Array de configuração para os links principais da sidebar.
@@ -36,6 +37,8 @@ const mainNav = [
   { href: "/dashboard/time-tracking", label: "Time Tracking", icon: Clock },
   { href: "/dashboard/invoices", label: "Invoices", icon: FileText },
   { href: "/dashboard/schedule", label: "Schedule", icon: Calendar },
+  { href: "/dashboard/clients", label: "Clients", icon: Users },
+  { href: "/dashboard/projects", label: "Projects", icon: BarChart3 },
 ];
 
 // Segundo grupo de navegação, separado visualmente do principal
@@ -148,7 +151,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Área principal onde o conteúdo de cada página do dashboard é renderizado.
           "flex-1" faz essa área ocupar todo o espaço restante ao lado da sidebar */}
-      <main className="flex-1 bg-deep-space">{children}</main>
+      <main className="flex-1 bg-deep-space p-8">{children}</main>
     </SidebarProvider>
   );
 }

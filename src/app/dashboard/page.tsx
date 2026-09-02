@@ -2,6 +2,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { WeeklyHoursCard } from "@/components/ui/dashboard/WeeklyHoursCard";
 import { TimerCard } from "@/components/ui/dashboard/TimerCard";
+import { stopTimeEntry } from "@/app/dashboard/actions";
 
 // Server Component assíncrono — roda no servidor a cada request,
 // busca os dados direto do Supabase antes de renderizar (sem precisar
@@ -40,7 +41,7 @@ export default async function DashboardPage() {
   // a partir de segunda-feira (>= monday), ordenadas da mais recente pra mais antiga
   const { data: timeEntries, error } = await supabase
     .from("time_entries")
-    .select("started_at, ended_at, description, project_id")
+    .select("id, started_at, ended_at, description, project_id")
     .eq("user_id", user?.id)
     .gte("started_at", monday.toISOString()) // gte = "greater than or equal"
     .order("started_at", { ascending: false });
@@ -120,6 +121,7 @@ export default async function DashboardPage() {
             task={activeEntry.description ?? "Untitled task"} // fallback caso a descrição esteja vazia
             elapsedTime={getElapsedTime(activeEntry.started_at)}
             progress={70} // Nota: também hardcoded — não calculado a partir de dados reais ainda
+            onStop={stopTimeEntry.bind(null, activeEntry.id)}
           />
         )}
 
