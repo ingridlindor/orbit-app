@@ -15,6 +15,13 @@ import { Button } from "@/components/ui/button";
 import { createClientRecord } from "@/app/dashboard/actions";
 import { Plus } from "lucide-react";
 
+const newClientTriggerButton = (
+  <Button className="bg-signal-amber text-deep-space hover:bg-signal-amber/90 gap-1.5">
+    <Plus className="size-4" />
+    New client
+  </Button>
+);
+
 export function NewClientDialog() {
   const [open, setOpen] = useState(false);
 
@@ -25,10 +32,7 @@ export function NewClientDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="bg-signal-amber text-deep-space hover:bg-signal-amber/90 gap-1.5">
-        <Plus className="size-4" />
-        New client
-      </DialogTrigger>
+      <DialogTrigger render={newClientTriggerButton} />
 
       <DialogContent className="bg-[#10142A] border-white/10 text-white">
         <DialogHeader>

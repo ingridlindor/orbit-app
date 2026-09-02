@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
-import { ClientCard } from "@/components/dashboard/ClientCard";
+import { ClientsList } from "@/components/dashboard/ClientsList";
+import { NewClientDialog } from "@/components/dashboard/NewClientDialog";
 
 export default async function ClientsPage() {
   const supabase = await createClient();
@@ -8,17 +8,17 @@ export default async function ClientsPage() {
 
   const { data: clients } = await supabase
     .from("clients")
-    .select("id, name, company_name")
+    .select("id, name, company_name, status")
     .eq("user_id", user?.id);
 
   const { data: projects } = await supabase
     .from("projects")
-    .select("id, name, client_id")
+    .select("id, name, client_id, hourly_rate")
     .eq("user_id", user?.id);
 
   const { data: timeEntries } = await supabase
     .from("time_entries")
-    .select("project_id, started_at")
+    .select("project_id, started_at, ended_at")
     .eq("user_id", user?.id)
     .order("started_at", { ascending: false });
 
@@ -27,6 +27,16 @@ export default async function ClientsPage() {
     if (!lastWorkedByProject.has(entry.project_id)) {
       lastWorkedByProject.set(entry.project_id, entry.started_at);
     }
+  });
+
+  const totalHoursByProject = new Map<string, number>();
+  timeEntries?.forEach((entry) => {
+    if (!entry.ended_at) return; // ignora entrada em andamento (timer ainda rodando)
+    const start = new Date(entry.started_at).getTime();
+    const end = new Date(entry.ended_at).getTime();
+    const hours = (end - start) / (1000 * 60 * 60);
+    const current = totalHoursByProject.get(entry.project_id) ?? 0;
+    totalHoursByProject.set(entry.project_id, current + hours);
   });
 
   const clientsWithProjects = (clients ?? []).map((client) => {
@@ -45,10 +55,25 @@ export default async function ClientsPage() {
       })
       .slice(0, 2);
 
+    const totalHours = allClientProjects.reduce(
+      (sum, p) => sum + (totalHoursByProject.get(p.id) ?? 0),
+      0
+    );
+
+    const revenue = allClientProjects.reduce((sum, p) => {
+      const hours = totalHoursByProject.get(p.id) ?? 0;
+      const rate = p.hourly_rate ?? 0;
+      return sum + hours * rate;
+    }, 0);
+
     return {
       ...client,
       recentProjects,
       totalProjects: allClientProjects.length,
+      totalHours,
+      revenue,
+      // Projeto mais recente do cliente, usado pro botão de "Start timer" rápido no card
+      mostRecentProjectId: recentProjects[0]?.id ?? null,
     };
   });
 
@@ -59,41 +84,10 @@ export default async function ClientsPage() {
           <h1 className="font-display text-2xl text-white">Clients</h1>
           <p className="text-white/60 mt-1">Manage your clients and recent projects</p>
         </div>
-        <Link
-          href="/dashboard/clients/new"
-          className="rounded-lg bg-orbit-blue/15 text-orbit-blue text-sm font-medium px-4 py-2 hover:bg-orbit-blue/25 transition-colors"
-        >
-          + New client
-        </Link>
+        <NewClientDialog />
       </div>
 
-      {clientsWithProjects.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-white/10 p-10 text-center">
-          <p className="text-white/70">No clients yet</p>
-          <p className="text-white/40 text-sm mt-1">
-            Add your first client to start tracking projects and time.
-          </p>
-          <Link
-            href="/dashboard/clients/new"
-            className="inline-block mt-4 rounded-lg bg-orbit-blue/15 text-orbit-blue text-sm font-medium px-4 py-2 hover:bg-orbit-blue/25 transition-colors"
-          >
-            + New client
-          </Link>
-        </div>
-      ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
-          {clientsWithProjects.map((client) => (
-            <ClientCard
-              key={client.id}
-              id={client.id}
-              name={client.name}
-              companyName={client.company_name}
-              recentProjects={client.recentProjects}
-              totalProjects={client.totalProjects}
-            />
-          ))}
-        </div>
-      )}
+      <ClientsList clients={clientsWithProjects} />
     </div>
   );
 }

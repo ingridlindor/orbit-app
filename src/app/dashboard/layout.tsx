@@ -151,7 +151,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Área principal onde o conteúdo de cada página do dashboard é renderizado.
           "flex-1" faz essa área ocupar todo o espaço restante ao lado da sidebar */}
-      <main className="flex-1 bg-deep-space">{children}</main>
+      <main className="flex-1 bg-deep-space p-8">{children}</main>
     </SidebarProvider>
   );
 }
